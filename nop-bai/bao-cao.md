@@ -69,10 +69,10 @@ Tập dữ liệu Census Income có sự mất cân bằng lớp rõ rệt khi l
 
 | | f1_score | accuracy |
 |---|---|---|
-| Bước 2 (chỉ `train_batch1`) | ___ | ___ |
-| Bước 3 (thêm `train_batch2`) | ___ | ___ |
+| Bước 2 (chỉ `train_batch1`) | 0.7149 | 0.8740 |
+| Bước 3 (thêm `train_batch2`) | 0.7354 | 0.8820 |
 
-**Nhận xét:** ___
+**Nhận xét:** Khi bổ sung thêm 22.361 mẫu từ `train_batch2`, tập dữ liệu huấn luyện tăng gấp đôi (đạt 44.722 mẫu), giúp F1-score của mô hình trên tập holdout tăng từ 0.7149 lên 0.7354 (tăng ~2.05%) và accuracy tăng từ 0.8740 lên 0.8820. Việc bổ sung lượng lớn dữ liệu cùng phân phối giúp mô hình Gradient Boosting khái quát hóa ranh giới quyết định cho lớp thiểu số tốt hơn mà không đánh đổi độ chính xác tổng thể. Quan trọng nhất, toàn bộ chu trình từ thêm dữ liệu, phiên bản hóa bằng DVC đến huấn luyện lại và tái triển khai lên server suy luận đã được thực hiện hoàn toàn tự động bởi pipeline CI/CD mà không cần bất kỳ can thiệp thủ công nào.
 
 <!--
 Một câu trả lời trung thực kiểu "f1 giảm 0,01 vì dữ liệu mới cùng phân phối, không mang
