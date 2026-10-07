@@ -13,11 +13,11 @@ HƯỚNG DẪN - đọc rồi XÓA TOÀN BỘ các khối chú thích này sau k
 
 | | |
 |---|---|
-| Họ và tên | ___ |
-| MSSV | ___ |
+| Họ và tên | Lê Quang Thành |
+| MSSV | 2A202602647 |
 | Lớp / Khóa | K4 |
-| Repo GitHub | https://github.com/___/___ |
-| Ngày nộp | ___ |
+| Repo GitHub | https://github.com/AIVIETNAM-AIO-tlee/K4-L3-DAY21-LeQuangThanh-2A202602647-CI-CD-for-AI-Systems |
+| Ngày nộp | 07/10/2026 |
 
 ---
 
@@ -27,13 +27,13 @@ HƯỚNG DẪN - đọc rồi XÓA TOÀN BỘ các khối chú thích này sau k
 
 | Lần chạy | n_estimators | learning_rate | max_depth | f1_score | accuracy |
 |---|---|---|---|---|---|
-| 1 | ___ | ___ | ___ | ___ | ___ |
-| 2 | ___ | ___ | ___ | ___ | ___ |
-| 3 | ___ | ___ | ___ | ___ | ___ |
+| 1 | 100 | 0.1 | 3 | 0.7109 | 0.8780 |
+| 2 | 50 | 0.05 | 2 | 0.6051 | 0.8460 |
+| 3 | 200 | 0.1 | 5 | 0.7149 | 0.8740 |
 
-**Bộ siêu tham số đã chọn:** `n_estimators=___`, `learning_rate=___`, `max_depth=___`.
+**Bộ siêu tham số đã chọn:** `n_estimators=200`, `learning_rate=0.1`, `max_depth=5`.
 
-**Lý do:** ___
+**Lý do:** Bộ siêu tham số này cho f1-score cao nhất trong 3 lần chạy thử nghiệm, đạt 0.7149, cao hơn đáng kể so với lần 1 (0.7109) và lần 2 (0.6051). Mặc dù lần 1 có accuracy cao nhất là 0.8780 nhưng không chênh lệch quá nhiều so với lần 3, nhưng f1-score thì cho ra đánh giá trực quan hơn về hiệu năng của mô hình vì thấy accuracy có thể gây hiểu nhầm. Quan sát thấy khi tăng số lượng cây (n_estimators) từ 50 lên 200, f1-score tăng lên, nhưng khi giảm learning_rate xuống 0.05, mô hình không cải thiện hiệu năng.
 
 <!--
 Trả lời trong phần Lý do:
@@ -47,18 +47,7 @@ Trả lời trong phần Lý do:
 
 ## 2. Vì Sao Ngưỡng Chất Lượng Đặt Trên F1 Chứ Không Phải Accuracy
 
-<!-- Khoảng 120 - 150 từ. -->
-
-___
-
-<!--
-Cần nêu được:
-  - Phân bố lớp của tập dữ liệu (tỷ lệ lớp thu nhập > 50K) và hệ quả của nó.
-  - Accuracy của một mô hình luôn trả lời "thu nhập thấp" là bao nhiêu, vì sao con số
-    đó gây hiểu nhầm.
-  - F1 của lớp dương đo điều gì mà accuracy không đo được.
-  - Vì sao KHÔNG dùng average="weighted" hay average="macro" khi gọi f1_score.
--->
+Tập dữ liệu Census Income có sự mất cân bằng lớp rõ rệt khi lớp dương (thu nhập > 50K USD) chỉ chiếm khoảng 24,8% tổng số mẫu. Nếu một mô hình đơn giản luôn dự đoán nhãn "thu nhập thấp" cho mọi đối tượng, độ chính xác (accuracy) vẫn đạt tới 75,2%, tạo ra ảo tưởng về một mô hình hiệu quả nhưng thực chất hoàn toàn vô dụng vì không phát hiện được bất kỳ trường hợp thu nhập cao nào. Điểm F1-score của lớp dương (trung bình điều hòa giữa precision và recall) đo lường chính xác năng lực nhận diện lớp thiểu số này, phản ánh cân bằng giữa việc tránh dự đoán nhầm và tránh bỏ sót. Do đó, ngưỡng chất lượng bắt buộc phải tính trực tiếp trên lớp dương mà không sử dụng `average="weighted"` hay `average="macro"`, bởi các phương pháp lấy trung bình này sẽ bị lớp đa số lấn át và làm mất đi ý nghĩa đánh giá thực tế.
 
 ---
 
@@ -68,9 +57,9 @@ Cần nêu được:
 
 | Khó khăn | Nguyên nhân | Cách giải quyết |
 |---|---|---|
-| ___ | ___ | ___ |
-| ___ | ___ | ___ |
-| ___ | ___ | ___ |
+| Lỗi cài đặt gói `scikit-learn==1.4.2` khi khởi tạo môi trường trên máy. | Môi trường mặc định dùng Python 3.13 chưa có bản wheel pre-built, việc build từ source yêu cầu numpy 2.0.0rc1 không tương thích. | Tạo lại môi trường ảo `.venv` bằng phiên bản Python 3.10 theo đúng chuẩn bài lab và CI/CD. |
+| Mô hình ở lần chạy 2 có accuracy tương đối cao (84.6%) nhưng F1-score lại tụt dốc (0.6051). | Dữ liệu bị mất cân bằng lớp khiến accuracy không phản ánh đúng chất lượng phân loại của lớp thiểu số. | Sử dụng MLflow UI để đối chiếu và quyết định lựa chọn bộ tham số dựa trên F1-score thay vì accuracy. |
+| Nguy cơ phát sinh lỗi đường dẫn khi tự động xuất file model và report. | Thư mục `outputs/` và `models/` có thể chưa tồn tại trước khi chạy script huấn luyện. | Sử dụng `os.makedirs(..., exist_ok=True)` trong script `src/train.py` trước khi lưu file. |
 
 ---
 
